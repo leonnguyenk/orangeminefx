@@ -18,38 +18,24 @@ import orangefx.MinePlace;
  * @author ramakant
  */
  //points of origin of rectangles
-var points = [0..600 step 40];
+
 
 var glowlevel: Integer=0;
 
 //the sequence of rectangles
-var rect = {
-    for(i in [1..256]){        
-        MinePlace {
-            x: points[i / 16],
-            y: points[i mod 16],
-            width: 40,
-            height: 40,
-                
-            color: Color.ORANGE
-            stroke: Color.WHITE
-            opacity: 1.0
-            
-        }       
-    }
-};
+
 
 
 
 //var colorsx =
 var stage = Stage {
-    title: "Application title"
-    width: 640
-    height: 640
-    style: StageStyle.UNDECORATED;
+    title: "Orange Mines"
+    width: 700
+    height: 700
+    //style: StageStyle.UNDECORATED;
     
     scene: Scene {
-            fill:Color.TRANSPARENT;
+            //fill:Color.TRANSPARENT;
 //        fill: RadialGradient {
 //            centerX: 320
 //            centerY: 320
@@ -73,7 +59,7 @@ var stage = Stage {
 //            ]
 //        }
         content: [
-            rect
+            MinePlace.rectangles
         ]
 
     }
@@ -84,7 +70,7 @@ var glowTimeLine = Timeline{
 }
 
 override function run():Void{
-    MinePlace.PlantBombs(rect);
-    MinePlace.BombCalculator(rect);
+    MinePlace.PlantBombs(MinePlace.rectangles);
+    MinePlace.BombCalculator(MinePlace.rectangles);
     stage;
 }
