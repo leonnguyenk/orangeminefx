@@ -16,6 +16,26 @@ import javafx.scene.text.Text;
 import javafx.util.Sequences;
 import orangefx.MinePlace;
 
+
+//var zoom = 1
+var points = [0..600 step 40];
+
+package var rectangles = {
+    for(i in [0..255]){
+        MinePlace {
+            xvalue: points[i / 16],
+            yvalue: points[i mod 16],
+            width: 40,
+            height: 40,
+            fontSize : 30
+
+            color: Color.ORANGE
+            stroke: Color.WHITE
+            opacity: 1.0
+
+        }
+    }
+};
 /**
  * @author ramakant
  */
@@ -23,8 +43,8 @@ import orangefx.MinePlace;
 public class MinePlace extends CustomNode{
     package var isBomb = false;
     package var bombInVicinity = 0;
-    package var x=0;
-    package var y = 0;
+    package var xvalue=0;
+    package var yvalue = 0;
     package var width = 10 ;
     package var height = 10 ;
     package var color = Color.WHITE;
@@ -36,22 +56,31 @@ public class MinePlace extends CustomNode{
              content:[
                  Rectangle {
                     var bombInVicinity = 0;
-                    x: x+3  y: y+3
+                    x: xvalue  y: yvalue
                     width: width height: height
-                    arcWidth: 20  arcHeight: 20
-                    fill: color
+                    arcWidth: 10  arcHeight: 10
+                    fill: bind color
                     stroke:stroke
                 }
                 Text {
                     font : Font {
                         size:fontSize
                     }
-                    x: 10, y: 10
-                    content: text
+                    x:xvalue+10, y: yvalue+32
+                    content: bind text
                 }
             ]
             onMousePressed: function(e):Void{
-                var rect: MinePlace = e.node as MinePlace;
+                //detecting click points
+                println("clicked at {e.sceneX},{e.sceneY}");
+                var clickX:Integer  = e.sceneX as Integer;
+                var clickY:Integer = e.sceneY as Integer;
+                // mapping clicks to x,y rectangle coordinates
+                var rectX:Integer = clickX/40;
+                var rectY:Integer = clickY/40;
+                //mapping rectangle coordinates to actual rectangle coordinates
+                var rectN:Integer = rectX*16+rectY;
+                var rect = rectangles[rectN];
                 //var rect = re.parent;
                 if(rect.isBomb) {   //rect.fill = Color.GREEN;
                     rect.color = Color.RED
@@ -59,13 +88,16 @@ public class MinePlace extends CustomNode{
                 else{
                     rect.color = Color.GREEN;
                     rect.fontSize = 30;
-                    rect.text = (rect.bombInVicinity.toString()) ;
+                    if(rect.bombInVicinity>0){
+                        rect.text = '{rect.bombInVicinity}' ;
+                    }
+                    
                 }
         }
     }
     override function create():Node{
       return gr;//group returned
-}
+    }
 }
 
 package function PlantBombs(rect:MinePlace[]):Void{
@@ -78,7 +110,7 @@ package function PlantBombs(rect:MinePlace[]):Void{
 
 // this function can be merged to plantbombs for optimization and less coding, but for now it is more convenient here
 package function BombCalculator(rect:MinePlace[]):Void{
-    for( index in [1..256]){
+    for( index in [0..255]){
         if(rect[index].isBomb){
             var x: Integer= index / 16;
             var y: Integer = index mod 16;
