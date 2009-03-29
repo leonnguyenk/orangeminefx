@@ -7,10 +7,11 @@
 package orangefx;
 
 import java.lang.Object;
-import javafx.animation.Timeline;
+import java.lang.System;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.Scene;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import orangefx.MinePlace;
@@ -22,55 +23,41 @@ import orangefx.MinePlace;
 
 var glowlevel: Integer=0;
 
-//the sequence of rectangles
-
-
-
-
-//var colorsx =
-var stage = Stage {
+var stage:Stage = Stage {
     title: "Orange Mines"
-    width: 700
-    height: 700
-    //style: StageStyle.UNDECORATED;
-    
+    width: 660
+    height: 650
+    style: StageStyle.TRANSPARENT;
+
+    //fullScreen:true
     scene: Scene {
-            //fill:Color.TRANSPARENT;
-//        fill: RadialGradient {
-//            centerX: 320
-//            centerY: 320
-//            focusX: 320
-//            focusY: 320
-//            radius: 320
-//            stops: [
-//                Stop {
-//                    color: Color.BLUE
-//                    offset: 0.0
-//                },
-//                Stop {
-//                    color: Color.ORANGERED
-//                    offset: 0.5
-//                },
-//                Stop {
-//                    color: Color.RED
-//                    offset: 1.0
-//                },
-//
-//            ]
-//        }
+        fill:Color.TRANSPARENT;
         content: [
             MinePlace.rectangles
+            ImageView {
+                fitWidth:20
+                fitHeight:20
+                x: 640 y: 0 image: Image {
+                    url:"{__DIR__}resources/close.png"
+                }
+                onMouseClicked:function(e){
+                    stage.close();
+                }
+            }
         ]
-
     }
 }
 
-var glowTimeLine = Timeline{
-
-}
+//var scaleTransition = ScaleTransition {
+//        duration: 2s node: MinePlace.rectangles[40]
+//        byX: 4.6 byY: 1.5
+//        repeatCount:4 autoReverse: true
+//    }
 
 override function run():Void{
+    println('first {MinePlace.points[0]} second last {MinePlace.points[15]} last {MinePlace.points[16]}');
     MinePlace.PlantBombs(MinePlace.rectangles);
     MinePlace.BombCalculator(MinePlace.rectangles);
     stage;
+    //scaleTransition.play();
 }
