@@ -7,19 +7,34 @@
 package orangefx;
 
 import java.lang.Object;
-import java.lang.System;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.Scene;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import orangefx.MinePlace;
 import orangefx.ConstantsV;
+import orangefx.MinePlace;
+import javafx.scene.text.Font;
 /**
  * @author ramakant
  */
  //points of origin of rectangles
+
+var scenex:Scene=Scene{
+    content:[
+            ImageView {
+        image: Image {
+            url: "{__DIR__}resources/instructions.png"
+        }
+    }
+
+    ]
+}
+
 
 var glowlevel: Integer=0;
 
@@ -45,10 +60,20 @@ package var stage:Stage = Stage {
     width: 660
     height: 650
     style: StageStyle.TRANSPARENT;
-    scene:scene;
+    scene:bind scenex;
     //fullScreen:true
     
 };
+var timer = Timeline{
+    keyFrames:[
+        KeyFrame{
+            time:2s
+            values:[scenex => scene ]
+        }
+
+    ]
+}
+
 
 //var scaleTransition = ScaleTransition {
 //        duration: 2s node: MinePlace.rectangles[40]
@@ -60,7 +85,9 @@ override function run():Void{
     println('first {MinePlace.points[0]} second last {MinePlace.points[15]} last {MinePlace.points[16]}');
     MinePlace.PlantBombs(MinePlace.rectangles);
     MinePlace.BombCalculator(MinePlace.rectangles);
+
     stage;
+    timer.play();
     //scaleTransition.play();
     if(ConstantsV.greens >=256-30){
         println('congratulations you won');
