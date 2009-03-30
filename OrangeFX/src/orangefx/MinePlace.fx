@@ -137,19 +137,20 @@ public class MinePlace extends CustomNode{
                 //rect.fill = Color.GREEN;
                 println('we have a bomb here');
                     rect.color = Color.RED;
+                    insert loseText into Main.stage.scene.content;
                     
                     Main.stage.close();
                     println('game over');
                     ConstantsV.reds++;
-                    newOutScene();
+                    //newOutScene();
                 }
                 else{                   
                     if(rect.color!=Color.GREEN){
                         rect.color = Color.GREEN;
                         ConstantsV.greens++;
                         if(ConstantsV.greens>=235){
-                            Main.stage.close;
-                            newScene();
+                            insert winText into Main.stage.scene.content;
+                            
                         }
 
                     }
@@ -202,8 +203,9 @@ function greenify(index:Integer):Void{
                         rectangles[index].color= Color.GREEN;
                         ConstantsV.greens++;
                         if(ConstantsV.greens>=235){
-                            Main.stage.close;
-                            newScene();
+                            insert winText into Main.stage.scene.content;
+                            //Main.stage.close;
+                            //newScene();
                     }}
            if(rectangles[index].bombInVicinity!=0){
             rectangles[index].fontSize = 30;
@@ -251,7 +253,7 @@ function newScene():Void{
         height: 100
         content: [ Text {
             font : Font {
-                size: 50
+                size: 80
             }
             x: 10, y: 30
             content: "Congratulations You Won!"
@@ -262,25 +264,16 @@ function newScene():Void{
 
 }
 
-
-function newOutScene():Void{
-    Stage {
-    title : "Sorry"
-    scene: Scene {
-        width: 200
-        height: 100
-        content: [ Text {
+var winText = Text {
             font : Font {
-                size: 50
+                size: 80
             }
             x: 10, y: 30
-            content: "You Lose"
+            content: "Congratulations You Won!"
         }
-        ]
-    }
-}
 
-}
+
+
 
  var loseText = Text {
             font : Font {
@@ -289,5 +282,6 @@ function newOutScene():Void{
             x: 200, y: 300
             content: "You Lose"
         }
+
 
 
