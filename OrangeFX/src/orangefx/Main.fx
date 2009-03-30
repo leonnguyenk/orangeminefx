@@ -15,25 +15,18 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import orangefx.MinePlace;
+import orangefx.ConstantsV;
 /**
  * @author ramakant
  */
  //points of origin of rectangles
 
-
 var glowlevel: Integer=0;
 
-var stage:Stage = Stage {
-    title: "Orange Mines"
-    width: 660
-    height: 650
-    style: StageStyle.TRANSPARENT;
-
-    //fullScreen:true
-    scene: Scene {
+package var scene:Scene =  Scene {
         fill:Color.TRANSPARENT;
         content: [
-            MinePlace.rectangles
+            MinePlace.rectangles,
             ImageView {
                 fitWidth:20
                 fitHeight:20
@@ -45,8 +38,17 @@ var stage:Stage = Stage {
                 }
             }
         ]
-    }
-}
+    };
+
+package var stage:Stage = Stage {
+    title: "Orange Mines"
+    width: 660
+    height: 650
+    style: StageStyle.TRANSPARENT;
+    scene:scene;
+    //fullScreen:true
+    
+};
 
 //var scaleTransition = ScaleTransition {
 //        duration: 2s node: MinePlace.rectangles[40]
@@ -60,4 +62,9 @@ override function run():Void{
     MinePlace.BombCalculator(MinePlace.rectangles);
     stage;
     //scaleTransition.play();
+    if(ConstantsV.greens >=256-30){
+        println('congratulations you won');
+        stage.close;
+    }
+
 }
