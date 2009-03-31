@@ -6,7 +6,8 @@
 
 package orangefx;
 
-import javafx.animation.transition.FadeTransition;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.scene.CustomNode;
 import javafx.scene.effect.light.DistantLight;
 import javafx.scene.effect.Lighting;
@@ -24,8 +25,8 @@ import javafx.util.Sequences;
 import orangefx.ConstantsV;
 import orangefx.Main;
 import orangefx.MinePlace;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
+import javafx.animation.transition.*;
+import orangefx.RegisterFlag;
 
 
 function fadeIt(rect:MinePlace):Void{
@@ -34,7 +35,7 @@ function fadeIt(rect:MinePlace):Void{
         fromValue: 1.0 toValue: 0.3
         repeatCount:2 autoReverse: true
     }
-    fadeTransition.play();
+    //fadeTransition.play();
 }
 
 
@@ -132,16 +133,22 @@ public class MinePlace extends CustomNode{
                 var rectN:Integer = rectY*16+rectX;
                 var rect = rectangles[rectN];
                 //var rect = re.parent;
-                if(e.secondaryButtonDown)
-                    insertFlag(rectX*40,rectY*40);
+                if(e.secondaryButtonDown){
+                    if(not RegisterFlag.haveFlag(rectX+rectY*16)){
+                        insertFlag(rectX,rectY);
+                    }else{
+                        removeFlag(rectX,rectY);
+                        RegisterFlag.unRegister(rectX+rectY*16);
+                    }
+
+                }
                 if(e.primaryButtonDown){
                 if(rect.isBomb) {  
-                //rect.fill = Color.GREEN;
+                
                 println('we have a bomb here');
                     rect.color = Color.RED;
-                    insert loseText into Main.stage.scene.content;
-                    delete rect from Main.stage.scene.content;
-                    disposeAfterDelay(3s);
+                    
+                    disposeAfterDelay(3s,loseText);
                     println('game over');
                     ConstantsV.reds++;
                     //newOutScene();
@@ -150,11 +157,9 @@ public class MinePlace extends CustomNode{
                     if(rect.color!=Color.GREEN){
                         rect.color = Color.GREEN;
                         ConstantsV.greens++;
-                        if(ConstantsV.greens>=235){
-                            insert winText into Main.stage.scene.content;
-                            
+                        if(ConstantsV.greens>=225){
+                            winCelebration();
                         }
-
                     }
                     rect.fontSize = 30;
                     if(rect.bombInVicinity>0){
@@ -201,18 +206,16 @@ function greenify(index:Integer):Void{
     //first color them green as they are available for coloring and show number if greater then 0
     if(not rectangles[index].isBomb){
         if(rectangles[index].color!=Color.GREEN){
-        rectangles[index].color = Color.GREEN;
-                        rectangles[index].color= Color.GREEN;
-                        ConstantsV.greens++;
-                        if(ConstantsV.greens>=235){
-                            insert winText into Main.stage.scene.content;
-                            //Main.stage.close;
-                            //newScene();
-                    }}
-           if(rectangles[index].bombInVicinity!=0){
+            rectangles[index].color = Color.GREEN;
+            ConstantsV.greens++;
+            if(ConstantsV.greens>=225){
+                winCelebration();
+            }
+        }
+        if(rectangles[index].bombInVicinity!=0){
             rectangles[index].fontSize = 30;
             rectangles[index].text = '{rectangles[index].bombInVicinity}' ;
-           }
+        }
 
     }
     //if it is a zero value area then recursive call to greenify all neighbours which are not green
@@ -222,7 +225,7 @@ function greenify(index:Integer):Void{
             var y: Integer = index / 16;
             for(i in [x-1..x+1 step 1]){
                 for(j in [y-1..y+1 step 1]){
-                    if(i>=0 and j>=0 and i<16 and j<16  and i!=j){
+                    if(i>=0 and j>=0 and i<16 and j<16  and (i!=x or j!=y)){
                         if((rectangles[j*16 + i].color != Color.GREEN) and not rectangles[j*16 + i].isBomb){
                             println('greenifying square{i},{j}');
                             greenify(j*16 + i);
@@ -233,41 +236,50 @@ function greenify(index:Integer):Void{
             }
       }
 }
-
-
-function insertFlag(x:Integer,y:Integer):Void{
-    var flag = ImageView {
-        x:x
-        y:y
+var xFlag = [0..61];
+var yFlag  = [0..61];
+var flag=for(i in [0..60]){
+    ImageView {
+        x:bind xFlag[i];
+        y:bind yFlag[i];
         image: Image {
             url: "{__DIR__}resources/flag.gif"
         }
     }
-    insert flag into Main.scene.content;
+ }
+ var register:RegisterFlag;
+
+function insertFlag(x:Integer,y:Integer):Void{
     ConstantsV.flags++;
+    xFlag[ConstantsV.flags] = x*40;
+    yFlag[ConstantsV.flags] = y*40;
+    insert flag[ConstantsV.flags] into Main.scene.content;
+    RegisterFlag.insertReg(x+y*16 , ConstantsV.flags);
 }
 
 function removeFlag(x:Integer,y:Integer):Void{
-   
+   delete flag[RegisterFlag.get(x+y*16)] from Main.scene.content;
+   ConstantsV.removeFlags++;
 }
 
 
 function newScene():Void{
     Stage {
-    title : "Congrats"
-    scene: Scene {
-        width: 200
-        height: 100
-        content: [ Text {
-            font : Font {
-                size: 80
-            }
-            x: 10, y: 30
-            content: "Congratulations You Won!"
+        title : "Congrats"
+        scene: Scene {
+            width: 200
+            height: 100
+            content: [
+                Text {
+                    font : Font {
+                        size: 80
+                    }
+                    x: 10, y: 30
+                    content: "Congratulations You Won!"
+                }
+            ]
         }
-        ]
     }
-}
 }
 
 var winText = Text {
@@ -284,17 +296,20 @@ var winText = Text {
  var loseText = Text {
             font : Font {
                 size: 50
+
             }
             x: 200, y: 300
             content: "You Lose"
-        }
- function disposeAfterDelay(timedelay:Duration):Void{
+            strokeWidth:20
+ }
+ function disposeAfterDelay(timedelay:Duration,text:Text):Void{
      Timeline{
          keyFrames:[
             KeyFrame{
                 time:0s
                 action:function(){
-                    insert rectOverlay into Main.stage.scene.content
+                    insert rectOverlay into Main.stage.scene.content;
+                    insert text into Main.stage.scene.content;
                 }
             }
             KeyFrame{
@@ -316,7 +331,31 @@ package var rectOverlay = Rectangle {
     opacity:0.4
 }
 
+var congratsImage =  ImageView {
+                image: Image {
+                    url: "{__DIR__}resources/Congratulations.png"
+                    preserveRatio:true
+                }
+            }
 
+package function winCelebration():Void{
+    
+    Main.scenex = winScene;
+    scaleTransition.play();
+    println('congrats');
+}
 
+var scaleTransition = ScaleTransition {
+        duration: 5s node: congratsImage
+        fromX:0.1 fromY:0.1
+        byX: 0.9 byY: 1.0
+        repeatCount:3 autoReverse: true
+    }
+var winScene = Scene{
+    fill:Color.TRANSPARENT
+    content:[
+        congratsImage
+    ]
+}
 
 

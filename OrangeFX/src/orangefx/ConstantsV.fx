@@ -16,3 +16,4 @@ public class ConstantsV {
 package var flags:Integer = 0;
 package var greens:Integer = 0;
 package var reds:Integer = 0;
+package var removeFlags:Integer = 0;
