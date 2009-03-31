@@ -13,6 +13,6 @@ package orangefx;
 public class ConstantsV {
 
 }
-package var flags = 0;
-package var greens = 0;
-package var reds = 0;
+package var flags:Integer = 0;
+package var greens:Integer = 0;
+package var reds:Integer = 0;

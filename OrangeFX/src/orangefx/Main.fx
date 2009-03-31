@@ -13,24 +13,60 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.Scene;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import orangefx.ConstantsV;
 import orangefx.MinePlace;
-import javafx.scene.text.Font;
+import javafx.scene.effect.*;
+import javafx.scene.effect.light.*;
 /**
  * @author ramakant
  */
  //points of origin of rectangles
-
+var progress:Integer;
+var progressPercent:Integer =bind  (progress*100/480);
 var scenex:Scene=Scene{
+    fill:Color.TRANSPARENT
     content:[
             ImageView {
+                fitWidth:520
+                fitHeight:300
         image: Image {
             url: "{__DIR__}resources/instructions.png"
         }
+
     }
+    Rectangle {
+        x: 20, y: 300
+        width: bind progress, height: 30
+        fill: Color.GREEN
+        arcWidth:10
+        arcHeight:10
+        effect: Lighting {
+        light: DistantLight { azimuth: -225 }
+        surfaceScale: 3
+    }
+
+    }
+//        Rectangle {
+//        x: bind progress+20, y: 300
+//        width: bind 500 - (20 + progress), height: 20
+//        fill: Color.TRANSPARENT
+//    }
+        Text {
+        font : Font {
+            size: 15
+        }
+        x: 240, y: 318
+        content:bind '{progressPercent}%'
+        stroke:Color.BLACK
+    }
+
+
+
 
     ]
 }
@@ -66,11 +102,14 @@ package var stage:Stage = Stage {
 };
 var timer = Timeline{
     keyFrames:[
-        KeyFrame{
-            time:2s
-            values:[scenex => scene ]
+    KeyFrame{
+            time:0s
+            values:[progress  => 0 ]
         }
-
+        KeyFrame{
+            time:3s
+            values:[scenex => scene,progress =>480 ]
+        }
     ]
 }
 
