@@ -338,9 +338,25 @@ var congratsImage =  ImageView {
                 }
             }
 
+var tt:Integer;
+
 package function winCelebration():Void{
-    
-    Main.scenex = winScene;
+    tt = RegisterFlag.totalTime();
+    Main.scenex = Scene{
+    fill:Color.TRANSPARENT
+    content:[
+        congratsImage
+            Text {
+            font : Font {
+                size: 50
+                embolden:true
+            }
+            x: 100, y: 400
+            content: "You finished in {tt}s"
+        }
+
+    ]
+}
     scaleTransition.play();
     println('congrats');
 }
@@ -355,6 +371,14 @@ var winScene = Scene{
     fill:Color.TRANSPARENT
     content:[
         congratsImage
+            Text {
+            font : Font {
+                size: 24
+            }
+            x: 200, y: 400
+            content: "You finished in {tt}s"
+        }
+        
     ]
 }
 

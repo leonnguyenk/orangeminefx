@@ -9,6 +9,8 @@ package orangefx;
 import java.lang.Object;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.scene.effect.*;
+import javafx.scene.effect.light.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
@@ -20,8 +22,6 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import orangefx.ConstantsV;
 import orangefx.MinePlace;
-import javafx.scene.effect.*;
-import javafx.scene.effect.light.*;
 /**
  * @author ramakant
  */
@@ -90,7 +90,7 @@ package var scene:Scene =  Scene {
             }
         ]
     };
-
+package var playTime:Duration = 0s;
 package var stage:Stage = Stage {
     title: "Orange Mines"
     width: 660
@@ -100,7 +100,10 @@ package var stage:Stage = Stage {
     //fullScreen:true
     
 };
-var timer = Timeline{
+package var playTimesecs:Number;
+
+
+package var timer = Timeline{
     keyFrames:[
     KeyFrame{
             time:0s
@@ -108,28 +111,29 @@ var timer = Timeline{
         }
         KeyFrame{
             time:3s
-            values:[scenex => scene,progress =>480 ]
+            values:[scenex => scene,progress =>480 ,playTimesecs=>1]
         }
+        KeyFrame{
+            time:999s
+            values:[playTimesecs=>999]
+        }
+
     ]
 }
 
-
-//var scaleTransition = ScaleTransition {
-//        duration: 2s node: MinePlace.rectangles[40]
-//        byX: 4.6 byY: 1.5
-//        repeatCount:4 autoReverse: true
-//    }
 
 override function run():Void{
     println('first {MinePlace.points[0]} second last {MinePlace.points[15]} last {MinePlace.points[16]}');
     MinePlace.PlantBombs(MinePlace.rectangles);
     MinePlace.BombCalculator(MinePlace.rectangles);
-
+    RegisterFlag.initializeTime();
     stage;
     timer.play();
-    //scaleTransition.play();
+    
     if(ConstantsV.greens >=225-30){
         println('congratulations you won');
         MinePlace.winCelebration();
     }    
 }
+
+
