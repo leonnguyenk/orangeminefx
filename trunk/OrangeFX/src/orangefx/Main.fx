@@ -28,7 +28,7 @@ import javafx.scene.effect.light.*;
  //points of origin of rectangles
 var progress:Integer;
 var progressPercent:Integer =bind  (progress*100/480);
-var scenex:Scene=Scene{
+package var scenex:Scene=Scene{
     fill:Color.TRANSPARENT
     content:[
             ImageView {
@@ -128,9 +128,8 @@ override function run():Void{
     stage;
     timer.play();
     //scaleTransition.play();
-    if(ConstantsV.greens >=256-30){
+    if(ConstantsV.greens >=225-30){
         println('congratulations you won');
-        stage.close;
-    }
-
+        MinePlace.winCelebration();
+    }    
 }
