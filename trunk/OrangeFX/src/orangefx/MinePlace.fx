@@ -15,15 +15,17 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
+import javafx.scene.Scene;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import javafx.util.Sequences;
+import orangefx.ConstantsV;
 import orangefx.Main;
 import orangefx.MinePlace;
-import orangefx.ConstantsV;
-import javafx.stage.Stage;
-import javafx.scene.Scene;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 
 
 function fadeIt(rect:MinePlace):Void{
@@ -138,8 +140,8 @@ public class MinePlace extends CustomNode{
                 println('we have a bomb here');
                     rect.color = Color.RED;
                     insert loseText into Main.stage.scene.content;
-                    
-                    Main.stage.close();
+                    delete rect from Main.stage.scene.content;
+                    disposeAfterDelay(3s);
                     println('game over');
                     ConstantsV.reds++;
                     //newOutScene();
@@ -245,6 +247,11 @@ function insertFlag(x:Integer,y:Integer):Void{
     ConstantsV.flags++;
 }
 
+function removeFlag(x:Integer,y:Integer):Void{
+   
+}
+
+
 function newScene():Void{
     Stage {
     title : "Congrats"
@@ -261,7 +268,6 @@ function newScene():Void{
         ]
     }
 }
-
 }
 
 var winText = Text {
@@ -282,6 +288,35 @@ var winText = Text {
             x: 200, y: 300
             content: "You Lose"
         }
+ function disposeAfterDelay(timedelay:Duration):Void{
+     Timeline{
+         keyFrames:[
+            KeyFrame{
+                time:0s
+                action:function(){
+                    insert rectOverlay into Main.stage.scene.content
+                }
+            }
+            KeyFrame{
+                time:timedelay                
+                action:dispose
+                }          
+         ]
+     }.play()
+ }
+
+function dispose():Void{
+    Main.stage.close();
+}
+
+package var rectOverlay = Rectangle {
+    x:0, y: 0
+    width: 650, height: 650
+    fill: Color.WHITE
+    opacity:0.4
+}
+
+
 
 
 
