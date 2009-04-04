@@ -111,7 +111,7 @@ package var timer = Timeline{
         }
         KeyFrame{
             time:3s
-            values:[scenex => scene,progress =>480 ,playTimesecs=>1]
+            values:[scenex => scene,progress => 480 ,playTimesecs=>1]
         }
         KeyFrame{
             time:999s
@@ -135,5 +135,3 @@ override function run():Void{
         MinePlace.winCelebration();
     }    
 }
-
-
