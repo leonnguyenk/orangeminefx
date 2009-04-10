@@ -8,12 +8,15 @@ package orangefx;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.animation.transition.*;
+import javafx.lang.Duration;
 import javafx.scene.CustomNode;
 import javafx.scene.effect.light.DistantLight;
 import javafx.scene.effect.Lighting;
 import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.Scene;
@@ -25,7 +28,6 @@ import javafx.util.Sequences;
 import orangefx.ConstantsV;
 import orangefx.Main;
 import orangefx.MinePlace;
-import javafx.animation.transition.*;
 import orangefx.RegisterFlag;
 
 
@@ -52,7 +54,10 @@ package var rectangles = {
             fontSize : 30
 
             color: Color{red:1.0,green:0.7}
-            stroke: Color.WHITE            
+            stroke: Color.WHITE
+            onMouseDragged: function(me:MouseEvent):Void {
+                Main.stage.x += me.dragX;
+                Main.stage.y += me.dragY;}
         }
     }
 };
