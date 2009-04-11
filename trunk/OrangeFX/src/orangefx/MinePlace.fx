@@ -6,6 +6,7 @@
 
 package orangefx;
 
+import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.animation.transition.*;
@@ -31,14 +32,7 @@ import orangefx.MinePlace;
 import orangefx.RegisterFlag;
 
 
-function fadeIt(rect:MinePlace):Void{
-    var fadeTransition = FadeTransition {
-        duration: 0.3s node: rect
-        fromValue: 1.0 toValue: 0.3
-        repeatCount:2 autoReverse: true
-    }
-    //fadeTransition.play();
-}
+
 
 
 //var zoom = 1
@@ -65,6 +59,27 @@ package var rectangles = {
  * @author ramakant
  */
 // mineplace returns group not an instance of mineplace so it must
+
+function fadeIt(rec:MinePlace):Void{
+    Timeline {
+    repeatCount: 1
+
+    keyFrames : [
+        KeyFrame {
+            time : 0s
+            values : rec.opacity => 0.8
+        }
+        KeyFrame{
+            time:150ms
+            values : rec.opacity =>1.0 tween Interpolator.DISCRETE
+        }
+
+    ]
+}.play();
+
+
+}
+
 public class MinePlace extends CustomNode{
     package var isBomb = false;
     package var bombInVicinity:Integer = 0;
@@ -78,10 +93,12 @@ public class MinePlace extends CustomNode{
     package var fontSize:Integer = 10;
     package var index:Integer = noOfRectangles++;
     package var azimuth:Integer = -10;
+    package var recOp = 1.0;
     package var gr = Group {
                 //var m : MinePlace = super;
              content:[
                  Rectangle {
+                    opacity :bind recOp;
                     var bombInVicinity = 0;
                     x: xvalue  y: yvalue
                     width: width height: height
@@ -125,6 +142,8 @@ public class MinePlace extends CustomNode{
                 var rect = rectangles[rectN];
                 fadeIt(rect);
             }
+           
+
 
             onMousePressed: function(e):Void{
                 //detecting click points
