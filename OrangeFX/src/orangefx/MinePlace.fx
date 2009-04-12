@@ -52,33 +52,13 @@ package var rectangles = {
             onMouseDragged: function(me:MouseEvent):Void {
                 Main.stage.x += me.dragX;
                 Main.stage.y += me.dragY;}
-        }
+            }
     }
 };
 /**
  * @author ramakant
  */
 // mineplace returns group not an instance of mineplace so it must
-
-function fadeIt(rec:MinePlace):Void{
-    Timeline {
-    repeatCount: 1
-
-    keyFrames : [
-        KeyFrame {
-            time : 0s
-            values : rec.opacity => 0.8
-        }
-        KeyFrame{
-            time:150ms
-            values : rec.opacity =>1.0 tween Interpolator.DISCRETE
-        }
-
-    ]
-}.play();
-
-
-}
 
 public class MinePlace extends CustomNode{
     package var isBomb = false;
@@ -93,18 +73,19 @@ public class MinePlace extends CustomNode{
     package var fontSize:Integer = 10;
     package var index:Integer = noOfRectangles++;
     package var azimuth:Integer = -10;
-    package var recOp = 1.0;
+    package var rectValueScale = 1.0;
     package var gr = Group {
+                var rect:Rectangle;
                 //var m : MinePlace = super;
              content:[
-                 Rectangle {
-                    opacity :bind recOp;
+                 rect = Rectangle {
                     var bombInVicinity = 0;
-                    x: xvalue  y: yvalue
+                    x: bind xvalue  y: bind yvalue
                     width: width height: height
                     arcWidth: 10  arcHeight: 10
-                    fill: bind color
-                    //stroke:stroke
+                    fill: bind if(rect.hover)Color.LIGHTPINK else color
+                    stroke:stroke
+                    
                 }
                 Text {
                     font : Font {
@@ -115,35 +96,15 @@ public class MinePlace extends CustomNode{
                     content: bind text
                 }
             ]
-//            effect:InnerShadow {
 //
-//                offsetX: 5
-//                offsetY: 5
-//                radius: 10
-//                //color: Color.WHEAT
+//            effect:Lighting {
+//                light:DistantLight{
+//                    azimuth : bind azimuth
+//                    elevation:50
+//                }
+//                surfaceScale: 3.0
+//                specularConstant:1.0
 //            }
-            effect:Lighting {
-                light:DistantLight{
-                    azimuth : bind azimuth
-                    elevation:50
-                }
-                surfaceScale: 3.0
-                specularConstant:1.0
-            }
-
-            onMouseEntered:function(e):Void{
-               var clickX:Integer  = e.sceneX as Integer;
-                var clickY:Integer = e.sceneY as Integer;
-                // mapping clicks to x,y rectangle coordinates
-                var rectX:Integer = clickX/40;
-                var rectY:Integer = clickY/40;
-                //mapping rectangle coordinates to actual rectangle coordinates
-                var rectN:Integer = rectY*16+rectX;
-                var rect = rectangles[rectN];
-                fadeIt(rect);
-            }
-           
-
 
             onMousePressed: function(e):Void{
                 //detecting click points
@@ -326,6 +287,7 @@ var winText = Text {
             content: "You Lose"
             strokeWidth:20
  }
+
  function disposeAfterDelay(timedelay:Duration,text:Text):Void{
      Timeline{
          keyFrames:[
@@ -371,16 +333,15 @@ package function winCelebration():Void{
     content:[
         congratsImage
             Text {
-            font : Font {
-                size: 50
-                embolden:true
+                font : Font {
+                    size: 50
+                    embolden:true
+                }
+                x: 100, y: 400
+                content: "You finished in {tt}s"
             }
-            x: 100, y: 400
-            content: "You finished in {tt}s"
-        }
-
-    ]
-}
+        ]
+    }
     scaleTransition.play();
     println('congrats');
 }
@@ -391,6 +352,7 @@ var scaleTransition = ScaleTransition {
         byX: 0.9 byY: 1.0
         repeatCount:3 autoReverse: true
     }
+
 var winScene = Scene{
     fill:Color.TRANSPARENT
     content:[
@@ -401,9 +363,6 @@ var winScene = Scene{
             }
             x: 200, y: 400
             content: "You finished in {tt}s"
-        }
-        
+        }        
     ]
 }
-
-
