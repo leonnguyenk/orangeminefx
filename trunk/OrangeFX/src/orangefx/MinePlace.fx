@@ -83,9 +83,9 @@ public class MinePlace extends CustomNode{
                     x: bind xvalue  y: bind yvalue
                     width: width height: height
                     arcWidth: 10  arcHeight: 10
-                    fill: bind if(rect.hover)Color.LIGHTPINK else color
-                    stroke:stroke
-                    
+                    fill:  color
+                    stroke: stroke
+                    strokeWidth:bind if (rect.hover) 6 else 1;
                 }
                 Text {
                     font : Font {
